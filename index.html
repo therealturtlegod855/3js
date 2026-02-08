@@ -10,7 +10,7 @@
 </head>
 <body>
 <script type="module">
-// Import directly from CDN URLs (no bare "three" specifier)
+// IMPORTANT: no "three" bare imports anywhere, only full URLs.
 import * as THREE from 'https://unpkg.com/three@0.164.0/build/three.module.js';
 import { OrbitControls } from 'https://unpkg.com/three@0.164.0/examples/jsm/controls/OrbitControls.js';
 
@@ -110,7 +110,7 @@ const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
 dirLight.position.set(50, 100, 50);
 scene.add(dirLight);
 
-// --- Voxel terrain params ---
+// --- Voxel terrain parameters ---
 const worldWidth = 64;
 const worldDepth = 64;
 const maxHeight  = 16;
@@ -119,6 +119,7 @@ const voxelSize  = 1;
 const noiseScale = 0.08;
 const heightMultiplier = maxHeight * 0.7;
 
+// Instanced voxel mesh
 const cubeGeo = new THREE.BoxGeometry(voxelSize, voxelSize, voxelSize);
 const cubeMat = new THREE.MeshStandardMaterial({ color: 0x55aa55 });
 
@@ -135,7 +136,7 @@ for (let x = 0; x < worldWidth; x++) {
   for (let z = 0; z < worldDepth; z++) {
     const nx = x * noiseScale;
     const nz = z * noiseScale;
-    const n = perlin.noise(nx, nz);
+    const n = perlin.noise(nx, nz); // ~[-1, 1]
 
     const height = Math.floor((n * 0.5 + 0.5) * heightMultiplier);
 
@@ -163,7 +164,7 @@ ground.rotation.x = -Math.PI / 2;
 ground.position.y = -1;
 scene.add(ground);
 
-// Loop
+// Animation loop
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
@@ -171,6 +172,7 @@ function animate() {
 }
 animate();
 
+// Resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
